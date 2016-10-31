@@ -213,7 +213,8 @@ basePath: "/v2"
 paths:
   "/worker":
     post:
-      description: takes a previous search and posts to worker.
+      description: |
+        takes a previous search and posts to worker.
       consumes:
       - application/json
       produces:
