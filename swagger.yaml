@@ -47,8 +47,8 @@ definitions:
         format: int
       requestId:
         type: string
-      person:
-        $ref: '#/definitions/person_object'
+      # person:
+      #   $ref: '#/definitions/person_object'
 responses:
   NotFound:
     description: Entity Not Found.
