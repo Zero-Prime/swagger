@@ -1160,65 +1160,11 @@ responses:
     description: Service Unreachable
     schema:
       "$ref": "#/definitions/response"
-
-
-tags:
-  - name: Person Lookup
-    description: |
-      Gets `Person` objects.  Optional query param of **size** determines size of returned arrayhost: [https://api.talentiq.co](api.talentiq.co)
-  - name: Response Fields
-    description: |
-        Each query will return a single person. If more than one person is found, the most relevant match is returned first. The user can request more matches from the query
-        by incrementing the `from` parameter in their POST data. The total number of persons matching the query is listed in the response as `total` .
-
-        SUCCESSFUL RESPONSE FIELDS
-        Response Field | Description
-        -------------  | -------------
-        likelihood `integer` | The calculated likelihood score
-        status | Response Code
-        total `total`| The total number of results found.
-        requestId `string` | Request Identification
-        person | person response object
-
-        The person object, containing all details about the requested person.
-  - name: Optimizing Match Rates
-    description: |
-      ***FINDING EXACT MATCHES***
-      * * *
-      When attempting to find exact matches for a person, we recommend only updating the person with the response data when the likelihood field in the response is 10.
-      Match rates and data quality will always be positively correlated with the quantity of data provided in the request.
-
-      ***SEARCH***
-      * * *
-      When using the API for search purposes (e.g., lead gen, candidate search), you will likely have to perform some analysis on your end to determine whether the
-      resulting persons match what you are looking for. It's difficult for us at this time to determine that a person who works at "TalentIQ Inc." also works at
-      "TalentIQ Technologies", so if you're not getting a response for a search containing specific skills, education, experience, or location data, it is likely that we
-      have a different name in our dataset than the one you're providing in the request. If this is causing problems on your end, our engineering team would be happy to
-      help you implement a custom solution that optimizes your use case.
-
-      ***FORMS***
-      * * *
-      The best solution for using the API to auto-populate forms and applications on behalf of your users, where the objective is to cut down on the amount of information
-      they have to manually enter, we recommend a progressive profiling approach, where as a user is filling out your form, you repeatedly hit our api with information they
-      have submitted until a 200 HTTP code with a likelihood value of 10 is returned.
-
-      The most optimal way to achieve this is to:
-
-        1. Have the user enter their email AND/OR linkedin URL. Request our API with this data to find a match.
-        2. If no person with a likelihood score of 10 is returned, have the user continue through the form/application until at least 3 of the following attributes have been added:
-            * Name   -  `name`
-            * Company  -  `company`
-            * Location -   `locality` ,   `country-name` ,   `region`
-            * School   -   `school`
-            * Major  -   `major`
-            * Degree  -   `degree`
-            * Skills  -   `skills`
-            * Non identity-driven social networks (twitter, github)   -   `profiles`
-            * Websites (personal, company, blog, resume url)   -   `websites`
-        3. Once at least 3 of these fields been added, and for every one added after that, hit our API with a new request containing all of this information.
-        Do this through the rest of the form/application flow until a match is found.
-
-
+securityDefinitions:
+  api_key:
+    type: apiKey
+    name: x-api-key
+    in: headers
 security:
 - type:
   - apiKey
