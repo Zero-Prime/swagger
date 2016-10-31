@@ -47,17 +47,16 @@ definitions:
         format: int
       requestId:
         type: string
-      person:
-        '$ref': '#/definitions/person_object'
+
 responses:
   NotFound:
     description: Entity Not Found.
     schema:
-      $ref: '#/definitions/response'
+      "$ref": "#/definitions/response"
   '200':
     description: Successful response, Candidate Found
     schema:
-      $ref: '#/definitions/response'
+      "$ref": "#/definitions/response"
     headers:
       X-Rate-Limit-Limit:
         description: The number of allowed requests in the current period
