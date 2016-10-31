@@ -25,3 +25,125 @@ consumes:
   - application/json
 produces:
   - application/json
+definitions:
+  response:
+    type: objects
+    required:
+      - error
+      - message
+      - likelihood
+      - status
+      - requestId
+      - person
+    properties:
+      error:
+        type: string
+        message: string
+      likelihood:
+        type: integer
+        format: int
+      status:
+        type: integer
+        format: int
+      requestId:
+        type: string
+
+responses:
+  NotFound:
+    description: Entity Not Found.
+    schema:
+      "$ref": "#/definitions/response"
+  '200':
+    description: Successful response, Candidate Found
+    schema:
+      "$ref": "#/definitions/response"
+    headers:
+      X-Rate-Limit-Limit:
+        description: The number of allowed requests in the current period
+        type: integer
+      X-Rate-Limit-Remaining:
+        description: The number of remaining requests in the current period
+        type: integer
+      X-Rate-Limit-Reset:
+        description: The number of seconds left in the current period
+        type: integer
+  '202':
+    description: Successful response, Candidate Found
+    schema:
+      $ref: '#/definitions/response'
+    headers:
+      X-Rate-Limit-Limit:
+        description: The number of allowed requests in the current period
+        type: integer
+      X-Rate-Limit-Remaining:
+        description: The number of remaining requests in the current period
+        type: integer
+      X-Rate-Limit-Reset:
+        description: The number of seconds left in the current period
+        type: integer
+  '206':
+    description: Successful response
+    schema:
+      $ref: '#/definitions/response'
+    headers:
+      X-Rate-Limit-Limit:
+        description: The number of allowed requests in the current period
+        type: integer
+      X-Rate-Limit-Remaining:
+        description: The number of remaining requests in the current period
+        type: integer
+      X-Rate-Limit-Reset:
+        description: The number of seconds left in the current period
+        type: integer
+  '401':
+    description: Unauthorized or Invalid Key.
+    schema:
+      $ref: '#/definitions/response'
+  '403':
+    description: Successful response
+    schema:
+      $ref: '#/definitions/response'
+    headers:
+      X-Rate-Limit-Limit:
+        description: The number of allowed requests in the current period
+        type: integer
+      X-Rate-Limit-Remaining:
+        description: The number of remaining requests in the current period
+        type: integer
+      X-Rate-Limit-Reset:
+        description: The number of seconds left in the current period
+        type: integer
+  '404':
+    description: Not Found
+    schema:
+      $ref: '#/definitions/response'
+  '405':
+    description: Method Not Allowed
+    schema:
+      $ref: '#/definitions/response'
+  '422':
+    description: Successful response
+    schema:
+      $ref: '#/definitions/response'
+  '429':
+    description: Successful response
+    schema:
+      $ref: '#/definitions/response'
+    headers:
+      X-Rate-Limit-Limit:
+        description: The number of allowed requests in the current period
+        type: integer
+      X-Rate-Limit-Remaining:
+        description: The number of remaining requests in the current period
+        type: integer
+      X-Rate-Limit-Reset:
+        description: The number of seconds left in the current period
+        type: integer
+  '500':
+    description: Successful response
+    schema:
+      $ref: '#/definitions/response'
+  '503':
+    description: Service Unreachable
+    schema:
+      $ref: '#/definitions/response'
