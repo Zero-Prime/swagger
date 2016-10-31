@@ -17,24 +17,23 @@ info:
 
     If you or anyone on your team has any questions, feature requests, or suggestions, please feel free to reach out to us anytime at [support@talentiq.co](support@talentiq.co).
 
-host: https://api.talentiq.co/v2/person
-
+host: api.talentiq.co
 schemes:
-- https
+  - https
 consumes:
-- application/json
+  - application/json
 produces:
-- application/json
+  - application/json
 definitions:
   response:
     type: objects
     required:
-    - error
-    - message
-    - likelihood
-    - status
-    - requestId
-    - person
+      - error
+      - message
+      - likelihood
+      - status
+      - requestId
+      - person
     properties:
       error:
         type: string
@@ -208,7 +207,6 @@ tags:
             * Websites (personal, company, blog, resume url)   -   `websites`
         3. Once at least 3 of these fields been added, and for every one added after that, hit our API with a new request containing all of this information.
         Do this through the rest of the form/application flow until a match is found.
-host: api.talentiq.co
 basePath: "/v2"
 paths:
   "/worker":
