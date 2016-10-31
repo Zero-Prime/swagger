@@ -18,6 +18,7 @@ info:
     If you or anyone on your team has any questions, feature requests, or suggestions, please feel free to reach out to us anytime at [support@talentiq.co](support@talentiq.co).
 
 host: api.talentiq.co
+basePath: "/v2"
 schemes:
   - https
 consumes:
@@ -207,7 +208,6 @@ tags:
             * Websites (personal, company, blog, resume url)   -   `websites`
         3. Once at least 3 of these fields been added, and for every one added after that, hit our API with a new request containing all of this information.
         Do this through the rest of the form/application flow until a match is found.
-basePath: "/v2"
 paths:
   "/worker":
     post:
