@@ -1058,11 +1058,113 @@ definitions:
     - locality
 parameters:
   - in: body
-      name: body
-      required: true
-      schema:
-        "$ref": "#/definitions/person"
-
+  name: body
+  required: true
+  schema:
+    "$ref": "#/definitions/person"
+responses:
+  '200':
+    headers:
+      X-RateLimit-Limit:
+        description: The number of allowed requests in the current period
+        type: integer
+      X-RateLimit-Remaining:
+        description: The number of remaining requests in the current period
+        type: integer
+      X-RateLimit-Reset:
+        description: The number of seconds left in the current period
+        type: integer
+      Content-Type:
+        description: content type of the data returned, generally in the same
+          format you requested
+        type: string
+    description: Successful response, Candidate Found.
+    schema:
+      "$ref": "#/definitions/response"
+  '202':
+    headers:
+      X-Rate-Limit-Limit:
+        description: The number of allowed requests in the current period
+        type: integer
+      X-Rate-Limit-Remaining:
+        description: The number of remaining requests in the current period
+        type: integer
+      X-Rate-Limit-Reset:
+        description: The number of seconds left in the current period
+        type: integer
+    description: Successful response, Candidate found.
+    schema:
+      "$ref": "#/definitions/response"
+  '206':
+    headers:
+      X-Rate-Limit-Limit:
+        description: The number of allowed requests in the current period
+        type: integer
+      X-Rate-Limit-Remaining:
+        description: The number of remaining requests in the current period
+        type: integer
+      X-Rate-Limit-Reset:
+        description: The number of seconds left in the current period
+        type: integer
+    description: Successful response
+    schema:
+      "$ref": "#/definitions/response"
+  '400':
+    description: Bad Request
+    schema:
+      "$ref": "#/definitions/response"
+  '401':
+    description: Unauthorized or Invalid Key.
+    schema:
+      "$ref": "#/definitions/response"
+  '403':
+    headers:
+      X-Rate-Limit-Limit:
+        description: The number of allowed requests in the current period
+        type: integer
+      X-Rate-Limit-Remaining:
+        description: The number of remaining requests in the current period
+        type: integer
+      X-Rate-Limit-Reset:
+        description: The number of seconds left in the current period
+        type: integer
+    description: Successful response
+    schema:
+      "$ref": "#/definitions/response"
+  '404':
+    description: Not Found
+    schema:
+      "$ref": "#/definitions/response"
+  '405':
+    description: Method Not Allowed
+    schema:
+      "$ref": "#/definitions/response"
+  '422':
+    description: Successful response
+    schema:
+      "$ref": "#/definitions/response"
+  '429':
+    headers:
+      X-Rate-Limit-Limit:
+        description: The number of allowed requests in the current period
+        type: integer
+      X-Rate-Limit-Remaining:
+        description: The number of remaining requests in the current period
+        type: integer
+      X-Rate-Limit-Reset:
+        description: The number of seconds left in the current period
+        type: integer
+    description: Successful response
+    schema:
+      "$ref": "#/definitions/response"
+  '500':
+    description: Successful response
+    schema:
+      "$ref": "#/definitions/response"
+  '503':
+    description: Service Unreachable
+    schema:
+      "$ref": "#/definitions/response"
 
 
 tags:
