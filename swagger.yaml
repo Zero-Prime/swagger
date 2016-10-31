@@ -18,27 +18,23 @@ info:
     If you or anyone on your team has any questions, feature requests, or suggestions, please feel free to reach out to us anytime at [support@talentiq.co](support@talentiq.co).
 
 host: https://api.talentiq.co/v2/person
-securityDefinitions:
-  api_key:
-    type: apiKey
-    name: x-api-key
-    in: header
+
 schemes:
-  - https
+- https
 consumes:
-  - application/json
+- application/json
 produces:
-  - application/json
+- application/json
 definitions:
   response:
     type: objects
     required:
-      - error
-      - message
-      - likelihood
-      - status
-      - requestId
-      - person
+    - error
+    - message
+    - likelihood
+    - status
+    - requestId
+    - person
     properties:
       error:
         type: string
@@ -152,11 +148,11 @@ responses:
     description: Service Unreachable
     schema:
       $ref: '#/definitions/response'
-
-
-
-
-
+securityDefinitions:
+  api_key:
+    type: apiKey
+    name: x-api-key
+    in: header
 tags:
   - name: Person Lookup
     description: |
