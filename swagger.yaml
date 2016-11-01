@@ -1173,7 +1173,7 @@ securityDefinitions:
       Authentication to the API is performed via HTTP Basic Auth . Provide your API key as the basic auth username value. You do not need to provide a password.
     type: apiKey
     name: x-api-key
-    in: headers
+    in: header
 security:
   api_key: []
 tags:
@@ -1182,7 +1182,117 @@ tags:
       TalentIQ uses conventional HTTP response codes to indicate the success or failure of an API request. In general, codes in the `2xx` range indicate success,
       codes in the `4xx` range indicate an error that failed given the information provided (e.g., an invalid API key was provided, we weren't able to find any
       persons matching the request data.), and codes in the `5xx` range indicate an error with TalentIQ's servers.
+  - name: Rate Limiting
+    description: |
+      In order to protect servers from being overloaded and maintain a higher quality of service to our clients, we have implemented rate limits on a per key basis.
+      Following the lead of Twitter, and Github, whose APIs both provide valuable information regarding rate limits, we have added the following headers to every response:
+
+        HEADER VALUES
+        Header Field | Description
+        ------------ | ------------
+        X-RateLimit-Limit | The rate limit associated with your API key (calls per minute)
+        X-RateLimit-Reset | The amount of time in seconds until your rate limit resets
+        X-RateLimit-Remaining | The number of calls before you’ve reached your rate limit
+  - name: Webhooks
+    description: |
+      At times the API will be unable to immediately find a match for a given request, or may be able to return more data on a person than what was originally returned.
+      When this happens, a job is created on our end to try and aggregate a person, and the requestor is given a `202` HTTP response code if no data was returned, or a `206` HTTP
+      response code if some data was returned (a partial). When this happens, there are two ways in which the requestor can obtain the data. First, they can check back later to
+      see if the data is there. The second method is to provide a `webhookUrl` in the request body, containing a URL that accepts JSON post data.
+      When a `webhookUrl` is provided, we will post the entire JSON response to the URL when we have completed aggregating data for the given request. This saves you the trouble
+      of having to check back later. The requestId returned in the initial request will be part of the JSON data, allowing you to easily match the original request to the updated
+      data. If we were still unable to aggregate any data on the given user, a `404` response is sent.
+  - name: Likelihood
+    description: |
+      Our likelihood score ensures that we are providing the best possible match for your lookup, and shows you how likely you’re getting what you’re looking for.
+      Our score is on a 1 - 10 scale with 10 being a very high probability match. The likelihood is calculated based on the parameters given to us compared against the result being returned.
+
+      On our end, the likelihood score is built by an algorithm that takes the weight of each item, which changes based on what is present in the request and response. The person you were
+      looking for may have a low likelihood, but that only means we didn’t have a lot to work with (e.g., small amount of parameters) in order to guarantee the match.
+      The likelihood score returned is most important when you are trying to find an exact match for a person. For example, if you're using the API to update records in your CRM,
+      and a request is made containing only the name "John Smith", we will likely shoot back a response with a very low likelihood score. This indicates that we were able to find
+      a person matching the name "John Smith", but not enough data was provided for us to infer that the "John Smith" returned was the "John Smith" that was requested.
+      See our optimizing match rates to learn how to take advantage of this functionality to create robust, accurate person matches.
+  - name: Versions
+    description: |
+      Versions are controlled in the request url. When backwards-incompatible changes to the API are made, a new version will be released.
+      The current api version is V2 which is indicated by the /v2/ portion of the url.
+  - name: matching
+    description: |
+      TalentIQ creates API matches by creating an array of unique identities from the request data. A unique identity lets us determine a match for the data requested in our data set.
+      The only data on a person that by itself counts as a unique identity is an identity-driven social network (linkedin, facebook), or an email address. The more unique identities
+      we're able to create from the request, the better the response data will be, and the more likely the person requested matches the person response.
+
+      IDENTITY CREATION GROUPS
+      1. Identity-driven social network (linkedin, facebook)
+          * `profiles`
+      2. Work email address
+          * `emails`
+      3. Personal email address
+          * `emails`
+      4. Three or more of the following (the more, the better):
+          * Name - `name`
+          * Company  -  `company`
+          * Location -   `locality` ,  `country-name` ,  `region`
+          * School   -   `school`
+          * Major  -   `major`
+          * Degree  -   `degree`
+          * Skills  -   `skills`
+          * Non identity-driven social networks (twitter, github) - `profiles`
+          * Websites (personal, company, blog, resume url) - `websites`
   - name: Person Lookup
     description: |
       Gets `Person` objects.  Optional query param of **size** determines size of returned arrayhost: [https://api.talentiq.co](api.talentiq.co)
     $ref: "#/definitions/person"
+  - name: Response fields
+    description: |
+      Each query will return a single person. If more than one person is found, the most relevant match is returned first. The user can request more matches from the query
+      by incrementing the `from` parameter in their POST data. The total number of persons matching the query is listed in the response as `total` .
+
+      SUCCESSFUL RESPONSE FIELDS
+      Response Field | Description
+      -------------  | -------------
+      likelihood `integer` | The calculated likelihood score
+      status | Response Code
+      total `total`| The total number of results found.
+      requestId `string` | Request Identification
+      person | person response object
+
+      The person object, containing all details about the requested person.
+    $ref: "#/definitions/response"
+  - name:  Optimizing Match Rates
+    description: |
+      ***FINDING EXACT MATCHES***
+      * * *
+      When attempting to find exact matches for a person, we recommend only updating the person with the response data when the likelihood field in the response is 10.
+      Match rates and data quality will always be positively correlated with the quantity of data provided in the request.
+
+      ***SEARCH***
+      * * *
+      When using the API for search purposes (e.g., lead gen, candidate search), you will likely have to perform some analysis on your end to determine whether the
+      resulting persons match what you are looking for. It's difficult for us at this time to determine that a person who works at "TalentIQ Inc." also works at
+      "TalentIQ Technologies", so if you're not getting a response for a search containing specific skills, education, experience, or location data, it is likely that we
+      have a different name in our dataset than the one you're providing in the request. If this is causing problems on your end, our engineering team would be happy to
+      help you implement a custom solution that optimizes your use case.
+
+      ***FORMS***
+      * * *
+      The best solution for using the API to auto-populate forms and applications on behalf of your users, where the objective is to cut down on the amount of information
+      they have to manually enter, we recommend a progressive profiling approach, where as a user is filling out your form, you repeatedly hit our api with information they
+      have submitted until a 200 HTTP code with a likelihood value of 10 is returned.
+
+      The most optimal way to achieve this is to:
+
+        1. Have the user enter their email AND/OR linkedin URL. Request our API with this data to find a match.
+        2. If no person with a likelihood score of 10 is returned, have the user continue through the form/application until at least 3 of the following attributes have been added:
+            * Name   -  `name`
+            * Company  -  `company`
+            * Location -   `locality` ,   `country-name` ,   `region`
+            * School   -   `school`
+            * Major  -   `major`
+            * Degree  -   `degree`
+            * Skills  -   `skills`
+            * Non identity-driven social networks (twitter, github)   -   `profiles`
+            * Websites (personal, company, blog, resume url)   -   `websites`
+        3. Once at least 3 of these fields been added, and for every one added after that, hit our API with a new request containing all of this information.
+        Do this through the rest of the form/application flow until a match is found.
