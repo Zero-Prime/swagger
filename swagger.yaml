@@ -1175,12 +1175,9 @@ securityDefinitions:
     name: x-api-key
     in: headers
 security:
-- type:
-  - apiKey
-  name:
-  - x-api-key
-  in:
-  - header
+  type: apiKey
+  name: x-api-key
+  in: header
 tags:
   - name: errors
     description: |
