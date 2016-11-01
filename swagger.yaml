@@ -176,7 +176,7 @@ definitions:
       requestId:
         type: string
       person:
-        "$ref": "#/definitions/person_object"
+        $ref: "#/definitions/person_object"
   person_object:
     type: object
     properties:
@@ -307,8 +307,7 @@ definitions:
               description: Phone numbers are stored as strings so use any format you like, e.g. 712-117-2923
           photos:
             type: array
-            description: Specify any number of social networks that you participate
-              in
+            description: Specify any number of social networks that you participate in
             uniqueItems: true
             items:
               type: object
@@ -325,8 +324,7 @@ definitions:
             description: URL (as per RFC 3986) to a picture in JPEG or PNG format
           profiles:
             type: array
-            description: Specify any number of social networks that you participate
-              in
+            description: Specify any number of social networks that you participate in
             uniqueItems: true
             items:
               type: object
@@ -369,8 +367,7 @@ definitions:
           properties:
             authority:
               type: string
-              description: e.g. Oracle Inc., Institute of Mechanical Engineering,
-                CIPD, United-States Immigration
+              description: e.g. Oracle Inc., Institute of Mechanical Engineering, CIPD, United-States Immigration
             url:
               type: string
               description: e.g. http://example-authority.com/
@@ -383,12 +380,10 @@ definitions:
               properties:
                 name:
                   type: string
-                  description: e.g. Oracle Database 12c Administrator Certified Associate,
-                    H1B
+                  description: e.g. Oracle Database 12c Administrator Certified Associate, H1B
                 summary:
                   type: string
-                  description: Thanks to $authorization/$certificate I am allowed
-                    to work/work as $profession/am qualified
+                  description: Thanks to $authorization/$certificate I am allowed to work/work as $profession/am qualified
                 verification:
                   type: string
                   description: e.g. http://example-authority.com/verify
@@ -479,13 +474,12 @@ definitions:
               uniqueItems: true
               items:
                 type: string
-                description: e.g. Increased profits by 20% from 2011-2012 through
-                  viral advertising
+                description: e.g. Increased profits by 20% from 2011-2012 through viral advertising
             institution:
               type: string
               description: e.g. Massachusetts Institute of Technology
             location:
-              "$ref": "#/definitions/location"
+              $ref: "#/definitions/location"
             major:
               type: string
               description: e.g. Arts
@@ -513,7 +507,7 @@ definitions:
               type: string
               description: e.g. http://world-economic-forum.example.com/
             location:
-              "$ref": "#/definitions/location"
+              $ref: "#/definitions/location"
             startDate:
               type: string
               description: Date (as per ISO 8601) e.g. 2014-06-29
@@ -564,7 +558,7 @@ definitions:
               type: string
               description: e.g. Facebook
             location:
-              "$ref": "#/definitions/location"
+              $ref: "#/definitions/location"
             title:
               type: string
               description: e.g. Software Engineer
@@ -869,7 +863,7 @@ definitions:
               type: string
               description: e.g. Facebook
             location:
-              "$ref": "#/definitions/location"
+              $ref: "#/definitions/location"
             position:
               type: string
               description: e.g. Software Engineer
@@ -954,7 +948,7 @@ definitions:
         minItems: 1
         maxItems: 5
         items:
-          "$ref": "#/definitions/location"
+          $ref: "#/definitions/location"
       profiles:
         type: array
         description: Social network profiles associated with the person.
@@ -1065,7 +1059,7 @@ responses:
         type: string
     description: Successful response, Candidate Found.
     schema:
-      "$ref": "#/definitions/response"
+      $ref: "#/definitions/response"
   '202':
     headers:
       X-Rate-Limit-Limit:
@@ -1079,7 +1073,7 @@ responses:
         type: integer
     description: Successful response, Candidate found.
     schema:
-      "$ref": "#/definitions/response"
+      $ref: "#/definitions/response"
   '206':
     headers:
       X-Rate-Limit-Limit:
@@ -1093,15 +1087,15 @@ responses:
         type: integer
     description: Successful response
     schema:
-      "$ref": "#/definitions/response"
+      $ref: "#/definitions/response"
   '400':
     description: Bad Request
     schema:
-      "$ref": "#/definitions/response"
+      $ref: "#/definitions/response"
   '401':
     description: Unauthorized or Invalid Key.
     schema:
-      "$ref": "#/definitions/response"
+      $ref: "#/definitions/response"
   '403':
     headers:
       X-Rate-Limit-Limit:
@@ -1115,19 +1109,19 @@ responses:
         type: integer
     description: Successful response
     schema:
-      "$ref": "#/definitions/response"
+      $ref: "#/definitions/response"
   '404':
     description: Not Found
     schema:
-      "$ref": "#/definitions/response"
+      $ref: "#/definitions/response"
   '405':
     description: Method Not Allowed
     schema:
-      "$ref": "#/definitions/response"
+      $ref: "#/definitions/response"
   '422':
     description: Successful response
     schema:
-      "$ref": "#/definitions/response"
+      $ref: "#/definitions/response"
   '429':
     headers:
       X-Rate-Limit-Limit:
@@ -1141,22 +1135,22 @@ responses:
         type: integer
     description: Successful response
     schema:
-      "$ref": "#/definitions/response"
+      $ref: "#/definitions/response"
   '500':
     description: Successful response
     schema:
-      "$ref": "#/definitions/response"
+      $ref: "#/definitions/response"
   '503':
     description: Service Unreachable
     schema:
-      "$ref": "#/definitions/response"
+      $ref: "#/definitions/response"
 parameters:
   requestObject:
     in: body
     name: body
     required: true
     schema:
-      "$ref": "#/definitions/person"
+      $ref: "#/definitions/person"
 securityDefinitions:
   api_key:
     description: |
@@ -1244,7 +1238,7 @@ tags:
     person | person response object
 
     The person object, containing all details about the requested person.
-  "$ref": "#/definitions/response"
+  $ref: "#/definitions/response"
 - name: Optimizing Match Rates
   description: |
     ***FINDING EXACT MATCHES***
@@ -1286,4 +1280,4 @@ tags:
     size of returned arrayhost: [https://api.talentiq.co](api.talentiq.co)
 
 '
-  "$ref": "#/definitions/person"
+  $ref: "#/definitions/person"
