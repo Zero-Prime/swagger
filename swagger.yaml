@@ -1240,10 +1240,6 @@ tags:
           * Skills  -   `skills`
           * Non identity-driven social networks (twitter, github) - `profiles`
           * Websites (personal, company, blog, resume url) - `websites`
-  - name: Person Lookup
-    description: |
-      Gets `Person` objects.  Optional query param of **size** determines size of returned arrayhost: [https://api.talentiq.co](api.talentiq.co)
-    $ref: "#/definitions/person"
   - name: Response fields
     description: |
       Each query will return a single person. If more than one person is found, the most relevant match is returned first. The user can request more matches from the query
@@ -1296,3 +1292,7 @@ tags:
             * Websites (personal, company, blog, resume url)   -   `websites`
         3. Once at least 3 of these fields been added, and for every one added after that, hit our API with a new request containing all of this information.
         Do this through the rest of the form/application flow until a match is found.
+  - name: Person Lookup
+    description: |
+      Gets `Person` objects.  Optional query param of **size** determines size of returned arrayhost: [https://api.talentiq.co](api.talentiq.co)
+    $ref: "#/definitions/person"
