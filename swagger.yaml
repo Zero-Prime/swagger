@@ -1160,6 +1160,12 @@ responses:
     description: Service Unreachable
     schema:
       "$ref": "#/definitions/response"
+parameters:
+  - in: body
+  - name: body
+  - required: true
+  - schema:
+    "$ref": "#/definitions/person"
 securityDefinitions:
   api_key:
     type: apiKey
