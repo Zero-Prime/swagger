@@ -1168,6 +1168,9 @@ parameters:
     "$ref": "#/definitions/person"
 securityDefinitions:
   api_key:
+    description: |
+    All requests to the API must specify the API key provided to you using the `X-Api-Key` customer header. Your API key carries many permissions so make sure to keep it safe!
+    Authentication to the API is performed via HTTP Basic Auth . Provide your API key as the basic auth username value. You do not need to provide a password.
     type: apiKey
     name: x-api-key
     in: headers
