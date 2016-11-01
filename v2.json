@@ -1572,7 +1572,7 @@
       "description": "Versions are controlled in the request url. When backwards-incompatible changes to the API are made, a new version will be released.\nThe current api version is V2 which is indicated by the /v2/ portion of the url.\n"
     },
     {
-      "name": "matching",
+      "name": "Matching",
       "description": "TalentIQ creates API matches by creating an array of unique identities from the request data. A unique identity lets us determine a match for the data requested in our data set.\nThe only data on a person that by itself counts as a unique identity is an identity-driven social network (linkedin, facebook), or an email address. The more unique identities\nwe're able to create from the request, the better the response data will be, and the more likely the person requested matches the person response.\n\nIDENTITY CREATION GROUPS\n1. Identity-driven social network (linkedin, facebook)\n    * `profiles`\n2. Work email address\n    * `emails`\n3. Personal email address\n    * `emails`\n4. Three or more of the following (the more, the better):\n    * Name - `name`\n    * Company  -  `company`\n    * Location -   `locality` ,  `country-name` ,  `region`\n    * School   -   `school`\n    * Major  -   `major`\n    * Degree  -   `degree`\n    * Skills  -   `skills`\n    * Non identity-driven social networks (twitter, github) - `profiles`\n    * Websites (personal, company, blog, resume url) - `websites`\n"
     },
     {
@@ -1586,7 +1586,7 @@
     },
     {
       "name": "Person Lookup",
-      "description": "Gets `Person` objects.  Optional query param of **size** determines size of returned arrayhost: [https://api.talentiq.co](api.talentiq.co)\n",
+      "description": "Gets `Person` objects.  Optional query param of **size** determines size of returned arrayhost: [https://api.talentiq.co](api.talentiq.co)",
       "$ref": "#/definitions/person"
     }
   ]

@@ -69,8 +69,7 @@ paths:
               description: The number of seconds left in the current period
               type: integer
             Content-Type:
-              description: content type of the data returned, generally in the same
-                format you requested
+              description: content type of the data returned, generally in the same format you requested
               type: string
           description: Successful response, Candidate Found.
           schema:
@@ -583,8 +582,7 @@ definitions:
               uniqueItems: true
               items:
                 type: string
-                description: e.g. Increased profits by 20% from 2011-2012 through
-                  viral advertising
+                description: e.g. Increased profits by 20% from 2011-2012 through viral advertising
             skills:
               type: array
               description: Skills utilized in the job.
@@ -702,12 +700,10 @@ definitions:
               format: date
             summary:
               type: string
-              description: Give an overview of your non work projects such as volunteering,
-                open-source or so
+              description: Give an overview of your non work projects such as volunteering, open-source or so
             non-profit:
               type: boolean
-              description: Specify if the project was a pure volunteer, non-profit
-                activity
+              description: Specify if the project was a pure volunteer, non-profit activity
             activities:
               type: array
               description: Specify your different projects/events for this experience
@@ -721,8 +717,7 @@ definitions:
                     description: e.g. Sponsor Acquisition
                   summary:
                     type: string
-                    description: Acquiring sponsors and maintaining the sponsorship
-                      relations
+                    description: Acquiring sponsors and maintaining the sponsorship relations
                   role:
                     type: string
                     description: e.g. sponsoring officer, volunteer, contributor
@@ -757,8 +752,7 @@ definitions:
               description: e.g. The World Wide Web
             summary:
               type: string
-              description: Short summary of publication. e.g. Discussion of the World
-                Wide Web, HTTP, HTML.
+              description: Short summary of publication. e.g. Discussion of the World Wide Web, HTTP, HTML.
             role:
               type: string
               description: e.g. author, co-author, editor, producer
@@ -815,9 +809,7 @@ definitions:
               description: e.g. My Mentor
             testimonial:
               type: string
-              description: e.g. Joe blogs was a great employee, who turned up to work
-                at least once a week. He exceeded my expectations when it came to
-                doing nothing.
+              description: e.g. Joe blogs was a great employee, who turned up to work at least once a week. He exceeded my expectations when it came to doing nothing.
             date:
               type: string
               description: Date (as per ISO 8601) e.g. 2014-06-29
@@ -887,8 +879,7 @@ definitions:
               uniqueItems: true
               items:
                 type: string
-                description: e.g. Increased profits by 20% from 2011-2012 through
-                  viral advertising
+                description: e.g. Increased profits by 20% from 2011-2012 through viral advertising
             skills:
               type: array
               description: Skills utilized in the job.
@@ -1054,8 +1045,7 @@ responses:
         description: The number of seconds left in the current period
         type: integer
       Content-Type:
-        description: content type of the data returned, generally in the same format
-          you requested
+        description: content type of the data returned, generally in the same format you requested
         type: string
     description: Successful response, Candidate Found.
     schema:
@@ -1200,7 +1190,7 @@ tags:
   description: |
     Versions are controlled in the request url. When backwards-incompatible changes to the API are made, a new version will be released.
     The current api version is V2 which is indicated by the /v2/ portion of the url.
-- name: matching
+- name: Matching
   description: |
     TalentIQ creates API matches by creating an array of unique identities from the request data. A unique identity lets us determine a match for the data requested in our data set.
     The only data on a person that by itself counts as a unique identity is an identity-driven social network (linkedin, facebook), or an email address. The more unique identities
@@ -1277,7 +1267,5 @@ tags:
       Do this through the rest of the form/application flow until a match is found.
 - name: Person Lookup
   description: 'Gets `Person` objects.  Optional query param of **size** determines
-    size of returned arrayhost: [https://api.talentiq.co](api.talentiq.co)
-
-'
+    size of returned arrayhost: [https://api.talentiq.co](api.talentiq.co)'
   $ref: "#/definitions/person"
