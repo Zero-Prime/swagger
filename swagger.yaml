@@ -1,1045 +1,282 @@
 ---
+swagger: '2.0'
+info:
+  version: '0.5'
+  title: A JSON Schema to represent the internal service of TIQ
+host: internal.talentiq.co
+basePath: "/v1"
+schemes:
+- http
+- https
 consumes:
 - application/json
 produces:
 - application/json
-schemes:
-- https
-swagger: '2.0'
-info:
-  title: Talent IQ Candidate API
-  version: 0.1.0
-host: api.talentiq.co
-basePath: "/v2"
 paths:
-  "/person":
+  "/employee/path":
     post:
-      description: |
-        Gets `Person` objects.
-        Optional query param of **size** determines
-        size of returned array
+      description: authentication route for dashboard
       consumes:
-      - application/json
-      produces:
-      - application/json
-      operationId: personHandle
+      - application/x-www-form-urlencoded
       parameters:
-      - name: body
-        in: body
+      - name: email
+        in: formData
+        type: string
+        format: email
         required: true
-        schema:
-          "$ref": "#/definitions/person"
-      - type: string
-        name: x-api-key
-        in: header
+      - name: password
+        in: formData
+        type: string
+        format: password
         required: true
       responses:
         '200':
-          description: Successful response, Candidate Found.
-          schema:
-            "$ref": "#/definitions/response"
+          description: logged in ok
           headers:
-            Content-Type:
-              type: string
-              description: content type of the data returned, generally in the same
-                format you requested
-            X-RateLimit-Limit:
-              type: integer
-              description: The number of allowed requests in the current period
-            X-RateLimit-Remaining:
-              type: integer
-              description: The number of remaining requests in the current period
-            X-RateLimit-Reset:
-              type: integer
-              description: The number of seconds left in the current period
-        '202':
-          description: Successful response, Candidate found.
-          schema:
-            "$ref": "#/definitions/response"
+            X-Employee-Verfication:
+              type: boolean
+        default:
+          description: All other responses are seen as errors
           headers:
-            X-Rate-Limit-Limit:
-              type: integer
-              description: The number of allowed requests in the current period
-            X-Rate-Limit-Remaining:
-              type: integer
-              description: The number of remaining requests in the current period
-            X-Rate-Limit-Reset:
-              type: integer
-              description: The number of seconds left in the current period
-        '206':
-          description: Successful response
+            X-Employee-Verfication:
+              type: boolean
           schema:
-            "$ref": "#/definitions/response"
-          headers:
-            X-Rate-Limit-Limit:
-              type: integer
-              description: The number of allowed requests in the current period
-            X-Rate-Limit-Remaining:
-              type: integer
-              description: The number of remaining requests in the current period
-            X-Rate-Limit-Reset:
-              type: integer
-              description: The number of seconds left in the current period
-        '400':
-          description: Bad Request
-          schema:
-            "$ref": "#/definitions/response"
-        '401':
-          description: Unauthorized or Invalid Key.
-          schema:
-            "$ref": "#/definitions/response"
-        '403':
-          description: Successful response
-          schema:
-            "$ref": "#/definitions/response"
-          headers:
-            X-Rate-Limit-Limit:
-              type: integer
-              description: The number of allowed requests in the current period
-            X-Rate-Limit-Remaining:
-              type: integer
-              description: The number of remaining requests in the current period
-            X-Rate-Limit-Reset:
-              type: integer
-              description: The number of seconds left in the current period
-        '404':
-          description: Not Found
-          schema:
-            "$ref": "#/definitions/response"
-        '405':
-          description: Method Not Allowed
-          schema:
-            "$ref": "#/definitions/response"
-        '422':
-          description: Successful response
-          schema:
-            "$ref": "#/definitions/response"
-        '429':
-          description: Successful response
-          schema:
-            "$ref": "#/definitions/response"
-          headers:
-            X-Rate-Limit-Limit:
-              type: integer
-              description: The number of allowed requests in the current period
-            X-Rate-Limit-Remaining:
-              type: integer
-              description: The number of remaining requests in the current period
-            X-Rate-Limit-Reset:
-              type: integer
-              description: The number of seconds left in the current period
-        '500':
-          description: Successful response
-          schema:
-            "$ref": "#/definitions/response"
-        '503':
-          description: Service Unreachable
-          schema:
-            "$ref": "#/definitions/response"
+            "$ref": "#/definitions/errors"
+  "/employee":
+    get:
+      description: fetches an employee record based on employee id (eid)
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: eid
+        required: true
+        type: integer
+      responses:
+        default:
+          "$ref": "#/responses/EmployeeResponse"
+    post:
+      description: creates an employee record
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          "$ref": "#/definitions/employee"
+      responses:
+        default:
+          "$ref": "#/responses/EmployeeResponse"
+    put:
+      description: updates existing employee
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          "$ref": "#/definitions/employee"
+      responses:
+        default:
+          "$ref": "#/responses/EmployeeResponse"
+    delete:
+      description: soft deletes employee record
+      parameters:
+      - in: query
+        name: employee_key
+        required: true
+        type: string
+      responses:
+        default:
+          "$ref": "#/responses/EmployeeResponse"
+  "/customer":
+    get:
+      description: fetches customer data based on apikey
+      consumes:
+      - text/plain
+      parameters:
+      - in: query
+        name: cid
+        type: integer
+      - in: query
+        name: apikey
+        type: string
+        format: uuid
+      responses:
+        default:
+          "$ref": "#/responses/CustomerResponse"
+    post:
+      description: creates a new customer
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          "$ref": "#/definitions/customer"
+      responses:
+        default:
+          "$ref": "#/responses/CustomerResponse"
+    put:
+      description: creates a new customer
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          "$ref": "#/definitions/customer"
+      responses:
+        default:
+          "$ref": "#/responses/CustomerResponse"
+    delete:
+      description: fetches customer data based on apikey
+      consumes:
+      - text/plain
+      parameters:
+      - in: query
+        name: customer_key
+        required: true
+        type: string
+        minLength: 1
+      responses:
+        default:
+          "$ref": "#/responses/CustomerResponse"
+responses:
+  EmployeeResponse:
+    description: This response is used for employee group routes
+    headers:
+      STATUS:
+        type: integer
+      X-Employee-Verfication:
+        type: boolean
+    schema:
+      "$ref": "#/definitions/EmployeeResponse"
+  CustomerResponse:
+    description: This response is used for employee group routes
+    headers:
+      STATUS:
+        type: integer
+      X-Employee-Verfication:
+        type: boolean
+    schema:
+      "$ref": "#/definitions/CustomerResponse"
 definitions:
-  location:
+  customer_key:
     type: object
     required:
-    - region
-    - country-name
-    - locality
+    - total_limit
+    - date_limit
+    - rate_limit
     properties:
-      country-name:
+      total_limit:
+        type: integer
+        format: int64
+      date_limit:
         type: string
-        minLength: 1
-      extended-address:
+        format: dateTime
+      rate_limit:
+        type: integer
+        format: int64
+      key:
         type: string
-        minLength: 1
-      locality:
-        type: string
-        minLength: 1
-      post-office-box:
-        type: string
-        minLength: 1
-      postal-code:
-        type: string
-        minLength: 1
-      region:
-        type: string
-        minLength: 1
-      street-address:
-        type: string
-        minLength: 1
-  person:
+  employee:
     type: object
-    minProperties: 1
+    required:
+    - email
+    - name
+    - active
+    - apikey
+    - management
     properties:
-      aliases:
-        description: Other names the person goes by.
-        type: array
-        maxItems: 5
-        minItems: 1
-        uniqueItems: true
-        items:
-          description: Other names the person may go by.
-          type: string
-          minLength: 2
-      education:
-        type: array
-        maxItems: 5
-        minItems: 1
-        uniqueItems: true
-        items:
-          type: object
-          properties:
-            degree:
-              description: e.g. Bachelor
-              type: string
-              minLength: 1
-            institution:
-              description: e.g. Massachusetts Institute of Technology
-              type: string
-              minLength: 1
-            major:
-              description: e.g. Arts
-              type: string
-              minLength: 1
-      emails:
-        description: Array containing all emails associated with the person.
-        type: array
-        maxItems: 5
-        minItems: 1
-        uniqueItems: true
-        items:
-          description: Email addresses associated with the person.
-          type: string
-          format: email
-      experience:
-        type: array
-        maxItems: 10
-        minItems: 1
-        uniqueItems: true
-        items:
-          type: object
-          properties:
-            company:
-              description: e.g. Facebook
-              type: string
-              minLength: 1
-            title:
-              description: e.g. Software Engineer
-              type: string
-              minLength: 1
-          additionalProperties: true
-      locations:
-        type: array
-        maxItems: 5
-        minItems: 1
-        uniqueItems: true
-        items:
-          "$ref": "#/definitions/location"
+      eid:
+        type: integer
+      email:
+        type: string
+        format: email
+      active:
+        type: boolean
+      apikey:
+        type: string
+      management:
+        type: boolean
+      password:
+        type: string
+        format: password
+      confirmPassword:
+        type: string
+        format: password
+  customer:
+    type: object
+    required:
+    - name
+    - email
+    - api_key
+    - fields
+    properties:
       name:
         type: string
-        minLength: 2
-      profiles:
-        description: Social network profiles associated with the person.
-        type: array
-        maxItems: 10
-        minItems: 1
-        uniqueItems: true
-        items:
-          description: The URL to the person's social profile.
-          type: string
-          format: url
-      skills:
-        description: Skills utilized in the job.
-        type: array
-        maxItems: 10
-        minItems: 1
-        uniqueItems: true
-        items:
-          description: e.g. Microsoft Office
-          type: string
-          minLength: 1
-      webhookUrl:
-        description: Specified url we will return response to
+        minLength: 5
+        maxLength: 20
+      api_key:
+        "$ref": "#/definitions/customer_key"
+      email:
         type: string
-        format: url
-      websites:
-        description: Personal websites associated with the person.
+        format: email
+      active:
+        type: boolean
+      date:
+        type: string
+        format: dateTime
+      fields:
         type: array
-        maxItems: 5
+        maxItems: 33
         minItems: 1
-        uniqueItems: true
         items:
-          description: URL (as per RFC 3986) to your website, e.g. personal homepage
-          type: string
-          format: url
-  person_object:
+          type: integer
+  CustomerResponse:
     type: object
+    required:
+    - customer
+    - date
+    - key_used
     properties:
-      basics:
-        type: object
-        properties:
-          additionalInfo:
-            description: Requesting this information in a VC might be illegal in various
-              regions
-            type: object
-            properties:
-              age:
-                description: Estimated age.
-                type: string
-              ageRange:
-                description: Estimated age range.
-                type: string
-              birth:
-                description: Information about the date and place of your birth
-                type: object
-                properties:
-                  date:
-                    description: Date (as per ISO 8601) e.g. 2014-06-29
-                    type: string
-                    format: date
-                  location:
-                    description: Place of birth e.g. New York
-                    type: string
-              children:
-                description: Provide information about your children, e.g. number
-                  of children and their age
-                type: string
-              citizenship:
-                type: array
-                uniqueItems: true
-                items:
-                  description: Information about your nationality, e.g. Canadian
-                  type: string
-              gender:
-                description: Provide information about your gender, e.g. male, female,
-                  other, $custom
-                type: string
-              homeOwnerStatus:
-                description: Do they own their home?
-                type: string
-              householdIncome:
-                description: Do they own their home?
-                type: string
-              location:
-                "$ref": "#/definitions/location"
-              maritalStatus:
-                description: Information about your civil status, e.g. married, single,
-                  divorced or widowed
-                type: string
-              salary:
-                description: The expected salary.
-                type: string
-              veteran:
-                description: Veteran status.
-                type: boolean
-          aliases:
-            description: Other names the user goes by.
-            type: array
-            uniqueItems: true
-            items:
-              description: A name.
-              type: string
-          awards:
-            description: Specify any awards they have received throughout their professional
-              career
-            type: array
-            uniqueItems: true
-            items:
-              type: object
-              properties:
-                awarder:
-                  description: e.g. Time Magazine
-                  type: string
-                date:
-                  description: e.g. 1989-06-12
-                  type: string
-                  format: date
-                summary:
-                  description: e.g. Received for my work with Quantum Physics
-                  type: string
-                title:
-                  description: e.g. One of the 100 greatest minds of the century
-                  type: string
-              additionalProperties: true
-          certification:
-            type: array
-            uniqueItems: true
-            items:
-              type: object
-              properties:
-                authority:
-                  description: e.g. Oracle Inc., Institute of Mechanical Engineering,
-                    CIPD, United-States Immigration
-                  type: string
-                certificates:
-                  type: object
-                  properties:
-                    expirationDate:
-                      description: Date (as per ISO 8601) e.g. 2014-06-29
-                      type: string
-                      format: date
-                    name:
-                      description: e.g. Oracle Database 12c Administrator Certified
-                        Associate, H1B
-                      type: string
-                    permanent:
-                      description: Specify permanency, e.g. false, true
-                      type: boolean
-                    regions:
-                      description: List of regions for authorization
-                      type: array
-                      uniqueItems: true
-                      items:
-                        description: e.g. United-States, New-York
-                        type: string
-                    startDate:
-                      description: Date (as per ISO 8601) e.g. 2014-06-29
-                      type: string
-                      format: date
-                    summary:
-                      description: Thanks to $authorization/$certificate I am allowed
-                        to work/work as $profession/am qualified
-                      type: string
-                    verification:
-                      description: e.g. http://example-authority.com/verify
-                      type: string
-                  additionalProperties: true
-                summary:
-                  description: Short summary who this authority is
-                  type: string
-                url:
-                  description: e.g. http://example-authority.com/
-                  type: string
-              additionalProperties: true
-          education:
-            type: array
-            uniqueItems: true
-            items:
-              type: object
-              properties:
-                courses:
-                  description: List notable courses/subjects
-                  type: array
-                  uniqueItems: true
-                  items:
-                    type: object
-                    properties:
-                      description:
-                        description: e.g. H1302 - Introduction to American history
-                        type: string
-                      score:
-                        description: score point average, e.g. 1.5
-                        type: string
-                      score_best:
-                        description: best possible score on the scale, e.g. 1.0
-                        type: string
-                      score_worst:
-                        description: worst possible score on the scale, e.g. 5.0
-                        type: string
-                      url:
-                        description: e.g. http://example-university.com/course/example42
-                        type: string
-                    additionalProperties: false
-                degree:
-                  description: e.g. Bachelor
-                  type: string
-                endDate:
-                  description: e.g. 2012-06-29
-                  type: string
-                  format: date
-                exams:
-                  description: List notable exams
-                  type: array
-                  uniqueItems: true
-                  items:
-                    type: object
-                    properties:
-                      description:
-                        description: e.g. year-end exam 2015
-                        type: string
-                      score:
-                        description: score point average, e.g. 1.5
-                        type: string
-                      score_best:
-                        description: best possible score on the scale, e.g. 1.0
-                        type: string
-                      score_worst:
-                        description: worst possible score on the scale, e.g. 5.0
-                        type: string
-                      url:
-                        description: e.g. http://example-university.com/exams/2015/year-end-exam
-                        type: string
-                    additionalProperties: false
-                gpa:
-                  description: grade point average, e.g. 3.67/4.0
-                  type: string
-                highlights:
-                  description: Specify multiple accomplishments
-                  type: array
-                  uniqueItems: true
-                  items:
-                    description: e.g. Increased profits by 20% from 2011-2012 through
-                      viral advertising
-                    type: string
-                institution:
-                  description: e.g. Massachusetts Institute of Technology
-                  type: string
-                location:
-                  "$ref": "#/definitions/location"
-                major:
-                  description: e.g. Arts
-                  type: string
-                startDate:
-                  description: e.g. 2014-06-29
-                  type: string
-                  format: date
-                url:
-                  description: e.g. http://facebook.com
-                  type: string
-              additionalProperties: true
-          email:
-            description: e.g. thomas@gmail.com
-            type: string
-            format: email
-          emails:
-            description: Email addresses associated with the user.
-            type: array
-            uniqueItems: true
-            items:
-              type: object
-              properties:
-                email:
-                  description: e.g. thomas@gmail.com
-                  type: string
-                  format: email
-                isVerified:
-                  description: Whether we have verified the email or not.
-                  type: boolean
-                  default: false
-              additionalProperties: true
-          events:
-            description: List notable events attended or where they have been a speaker
-            type: array
-            uniqueItems: true
-            items:
-              type: object
-              properties:
-                endDate:
-                  description: Date (as per ISO 8601) e.g. 2014-06-29
-                  type: string
-                  format: date
-                location:
-                  "$ref": "#/definitions/location"
-                name:
-                  description: e.g. World Economic Forum
-                  type: string
-                roles:
-                  description: e.g. attendee, visitor, coordinator, speaker, unconference_everything
-                  type: string
-                startDate:
-                  description: Date (as per ISO 8601) e.g. 2014-06-29
-                  type: string
-                  format: date
-                summary:
-                  description: Forum about world economics
-                  type: string
-                talks:
-                  description: List of attended or given talks/presentations
-                  type: array
-                  uniqueItems: true
-                  items:
-                    type: object
-                    properties:
-                      date:
-                        description: Date (as per ISO 8601) e.g. 2014-06-29
-                        type: string
-                        format: date
-                      recording:
-                        description: e.g. http://google.com/84s7f8d
-                        type: string
-                        format: uri
-                      slides:
-                        description: e.g. http://slideshare.com/a-presentation
-                        type: string
-                        format: uri
-                      summary:
-                        description: Awesome presentation about the state of the world
-                        type: string
-                      title:
-                        description: e.g. A state of the world
-                        type: string
-                      url:
-                        description: Product showcase related to talk e.g. http://example.com/fancy_world_product
-                        type: string
-                    additionalProperties: false
-                url:
-                  description: e.g. http://world-economic-forum.example.com/
-                  type: string
-          experience:
-            type: array
-            uniqueItems: true
-            items:
-              type: object
-              properties:
-                company:
-                  description: e.g. Facebook
-                  type: string
-                endDate:
-                  description: e.g. 2012-06-29
-                  type: string
-                highlights:
-                  description: Specify multiple accomplishments
-                  type: array
-                  uniqueItems: true
-                  items:
-                    description: e.g. Increased profits by 20% from 2011-2012 through
-                      viral advertising
-                    type: string
-                location:
-                  "$ref": "#/definitions/location"
-                salary:
-                  description: The estimated salary for the position at the company.
-                  type: string
-                skills:
-                  description: Skills utilized in the job.
-                  type: array
-                  uniqueItems: true
-                  items:
-                    description: e.g. Microsoft Office
-                    type: string
-                startDate:
-                  description: resume.json uses the ISO 8601 date standard e.g. 2014-06-29
-                  type: string
-                summary:
-                  description: Give an overview of your responsibilities at the company
-                  type: string
-                title:
-                  description: e.g. Software Engineer
-                  type: string
-                url:
-                  description: e.g. http://facebook.com
-                  type: string
-          industry:
-            description: e.g. Software
-            type: string
-          interests:
-            type: array
-            uniqueItems: true
-            items:
-              type: object
-              properties:
-                keywords:
-                  type: array
-                  items:
-                    description: e.g. Friedrich Nietzsche
-                    type: string
-                name:
-                  description: e.g. Philosophy
-                  type: string
-              additionalProperties: true
-          languages:
-            description: Languages the person speaks
-            type: array
-            uniqueItems: true
-            items:
-              type: object
-              properties:
-                level:
-                  description: e.g. Fluent, Beginner
-                  type: string
-                name:
-                  description: e.g. English, Spanish
-                  type: string
-              additionalProperties: true
-          location:
-            "$ref": "#/definitions/location"
-          locations:
-            type: array
-            uniqueItems: true
-            items:
-              "$ref": "#/definitions/location"
-          name:
-            description: The person's name, e.g., Daniel Amaya
-            type: string
-          organizations:
-            description: Organizations the person has been involved with.
-            type: array
-            uniqueItems: true
-            items:
-              type: object
-              properties:
-                endDate:
-                  description: e.g. 2012-06-29
-                  type: string
-                  format: date
-                name:
-                  description: e.g. Timothy Cook
-                  type: string
-                startDate:
-                  description: e.g. 2014-06-29
-                  type: string
-                  format: date
-                summary:
-                  description: Give an overview of your responsibilities at the company
-                  type: string
-                title:
-                  description: e.g., web developer
-                  type: string
-                url:
-                  description: e.g., http://github.com/repo
-                  type: string
-              additionalProperties: true
-          patents:
-            description: Specify any certificates they have been awarded
-            type: array
-            uniqueItems: true
-            items:
-              type: object
-              properties:
-                dateIssued:
-                  description: e.g. 2014-03-25
-                  type: string
-                  format: date
-                description:
-                  description: A description of the patent
-                  type: string
-                institution:
-                  description: e.g. MongoDB University
-                  type: string
-                name:
-                  description: 'e.g. M101P: MongoDB for Developers'
-                  type: string
-                patentNumber:
-                  description: The patent number
-                  type: string
-                website:
-                  description: e.g. https://s3.amazonaws.com/edu-cert.10gen.com/downloads/b5f42dc3aa1d4add9f1dc6ed290f1c81/Certificate.pdf
-                  type: string
-              additionalProperties: false
-          phone:
-            description: Phone numbers are stored as strings so use any format you
-              like, e.g. 712-117-2923
-            type: string
-          phoneNumbers:
-            description: Phone numbers associated with the user.
-            type: array
-            uniqueItems: true
-            items:
-              description: Phone numbers are stored as strings so use any format you
-                like, e.g. 712-117-2923
-              type: string
-          photos:
-            description: Specify any number of social networks that you participate
-              in
-            type: array
-            uniqueItems: true
-            items:
-              type: object
-              properties:
-                network:
-                  description: e.g. Facebook or Twitter
-                  type: string
-                url:
-                  description: e.g. http://twitter.com/neutralthoughts
-                  type: string
-              additionalProperties: true
-          picture:
-            description: URL (as per RFC 3986) to a picture in JPEG or PNG format
-            type: string
-          profiles:
-            description: Specify any number of social networks that you participate
-              in
-            type: array
-            uniqueItems: true
-            items:
-              type: object
-              properties:
-                network:
-                  description: e.g. Facebook or Twitter
-                  type: string
-                url:
-                  description: e.g. http://twitter.com/neutralthoughts
-                  type: string
-                username:
-                  description: e.g. neutralthoughts
-                  type: string
-              additionalProperties: true
-          projects:
-            type: array
-            uniqueItems: true
-            items:
-              type: object
-              properties:
-                activities:
-                  description: Specify your different projects/events for this experience
-                  type: array
-                  uniqueItems: true
-                  items:
-                    type: object
-                    properties:
-                      endDate:
-                        description: Date (as per ISO 8601) e.g. 2014-06-29
-                        type: string
-                        format: date
-                      name:
-                        description: e.g. Sponsor Acquisition
-                        type: string
-                      role:
-                        description: e.g. sponsoring officer, volunteer, contributor
-                        type: string
-                      skills:
-                        description: Skills utilized in the job.
-                        type: array
-                        uniqueItems: true
-                        items:
-                          description: e.g. Microsoft Office
-                          type: string
-                      startDate:
-                        description: Date (as per ISO 8601) e.g. 2014-06-29
-                        type: string
-                        format: date
-                      summary:
-                        description: Acquiring sponsors and maintaining the sponsorship
-                          relations
-                        type: string
-                      url:
-                        description: Showcase your project/activity e.g. http://greenpeace.com/run-for-nature-2015
-                        type: string
-                    additionalProperties: true
-                endDate:
-                  description: Date (as per ISO 8601) e.g. 2014-06-29
-                  type: string
-                  format: date
-                entity:
-                  description: e.g. greenpeace
-                  type: string
-                non-profit:
-                  description: Specify if the project was a pure volunteer, non-profit
-                    activity
-                  type: boolean
-                role:
-                  description: e.g. sponsorship officer, contributor
-                  type: string
-                startDate:
-                  description: Date (as per ISO 8601) e.g. 2014-06-29
-                  type: string
-                  format: date
-                summary:
-                  description: Give an overview of your non work projects such as
-                    volunteering, open-source or so
-                  type: string
-                url:
-                  description: e.g. http://facebook.com
-                  type: string
-              additionalProperties: true
-          publications:
-            description: Specify your publications through your career
-            type: array
-            uniqueItems: true
-            items:
-              type: object
-              properties:
-                identifiers:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      DOI:
-                        description: e.g. 10.1000/182
-                        type: string
-                      EAN:
-                        description: e.g. 4 003994 155486
-                        type: string
-                      GTIN:
-                        description: e.g. 403456789012 1
-                        type: string
-                      ISBN:
-                        description: e.g. 978-3-16-148410-0
-                        type: string
-                      ISRN:
-                        description: e.g. UIUCLIS--2001/9+EARCH
-                        type: string
-                      ISSN:
-                        description: e.g. 0000-0000
-                        type: string
-                      ISTC:
-                        description: e.g. A02-2009-000004BE-A
-                        type: string
-                  additionalProperties: true
-                publisher:
-                  description: e.g. IEEE, Computer Magazine
-                  type: string
-                releaseDate:
-                  description: Date (as per ISO 8601) e.g. 2014-06-29
-                  type: string
-                  format: date
-                role:
-                  description: e.g. author, co-author, editor, producer
-                  type: string
-                summary:
-                  description: Short summary of publication. e.g. Discussion of the
-                    World Wide Web, HTTP, HTML.
-                  type: string
-                title:
-                  description: e.g. The World Wide Web
-                  type: string
-                url:
-                  description: e.g. http://www.computer.org/csdl/mags/co/1996/10/rx069-abs.html
-                  type: string
-              additionalProperties: true
-          references:
-            description: List references/testimonials they have received
-            type: array
-            uniqueItems: true
-            items:
-              type: object
-              properties:
-                contactInfo:
-                  type: object
-                  properties:
-                    employer:
-                      description: e.g. Piedpiper Inc
-                      type: string
-                    phone:
-                      description: 0404 444 444
-                      type: string
-                    position:
-                      description: e.g. Master of Desaster
-                      type: string
-                  additionalProperties: true
-                date:
-                  description: Date (as per ISO 8601) e.g. 2014-06-29
-                  type: string
-                  format: date
-                name:
-                  description: e.g. Timothy Cook
-                  type: string
-                relationship:
-                  description: e.g. My Mentor
-                  type: string
-                testimonial:
-                  description: e.g. Joe blogs was a great employee, who turned up
-                    to work at least once a week. He exceeded my expectations when
-                    it came to doing nothing.
-                  type: string
-              additionalProperties: false
-          skills:
-            description: professional skill-set
-            type: array
-            uniqueItems: true
-            items:
-              type: object
-              properties:
-                level:
-                  description: e.g. Master
-                  type: string
-                name:
-                  description: e.g. Web Development
-                  type: string
-                years:
-                  description: Years experience with the skill
-                  type: string
-              additionalProperties: true
-          summary:
-            description: The person's summary of themselves. E.g., Objective
-            type: string
-          tagline:
-            description: e.g. The Best Developer, Ever.
-            type: string
-          title:
-            description: e.g. Web Developer
-            type: string
-          url:
-            description: URL (as per RFC 3986) to your website, e.g. personal homepage
-            type: string
-          volunteer:
-            type: array
-            uniqueItems: true
-            items:
-              type: object
-              properties:
-                endDate:
-                  description: e.g. 2012-06-29
-                  type: string
-                  format: date
-                highlights:
-                  description: Specify multiple accomplishments
-                  type: array
-                  uniqueItems: true
-                  items:
-                    description: e.g. Increased profits by 20% from 2011-2012 through
-                      viral advertising
-                    type: string
-                location:
-                  "$ref": "#/definitions/location"
-                organization:
-                  description: e.g. Facebook
-                  type: string
-                position:
-                  description: e.g. Software Engineer
-                  type: string
-                skills:
-                  description: Skills utilized in the job.
-                  type: array
-                  uniqueItems: true
-                  items:
-                    description: e.g. Microsoft Office
-                    type: string
-                startDate:
-                  description: resume.json uses the ISO 8601 date standard e.g. 2014-06-29
-                  type: string
-                  format: date
-                summary:
-                  description: Give an overview of your responsibilities at the company
-                  type: string
-                url:
-                  description: e.g. http://facebook.com
-                  type: string
-              additionalProperties: true
-          websites:
-            description: Websites associated with user.
-            type: array
-            uniqueItems: true
-            items:
-              description: URL (as per RFC 3986) to your website, e.g. personal homepage
-              type: string
-        additionalProperties: true
-  response:
+      error:
+        "$ref": "#/definitions/errors"
+      date:
+        type: string
+        format: dateTime
+      key_used:
+        type: string
+        format: uuid
+      customer:
+        "$ref": "#/definitions/customer"
+  EmployeeResponse:
+    type: object
+    required:
+    - employee
+    - date
+    - key_used
+    properties:
+      error:
+        "$ref": "#/definitions/errors"
+      date:
+        type: string
+        format: dateTime
+      key_used:
+        type: string
+        format: uuid
+      employee:
+        "$ref": "#/definitions/employee"
+  errors:
     type: object
     required:
     - error
-    - message
-    - likelihood
     - status
-    - requestId
-    - person
+    - validationErrors
     properties:
       error:
         type: string
-      likelihood:
-        type: integer
-        format: int
-      message:
-        type: string
-      person:
-        "$ref": "#/definitions/person_object"
-      requestId:
-        type: string
       status:
         type: integer
-        format: int
-  worker:
-    type: object
-    properties:
-      message:
-        type: string
-      status:
-        type: integer
-responses:
-  NotFound:
-    description: Entity Not Found.
-    schema:
-      "$ref": "#/definitions/response"
-securityDefinitions:
-  api_key:
-    type: apiKey
-    name: x-api-key
-    in: header
+      validationErrors:
+        type: array
+        uniqueItems: true
+        items:
+          type: string
